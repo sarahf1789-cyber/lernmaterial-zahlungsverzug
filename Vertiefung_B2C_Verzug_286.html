@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vertiefung: B2C-Verzug § 286 BGB</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#F5F7FA;color:#1A1A2E;padding:16px;max-width:580px;margin:0 auto}
+.page-header{background:#1A3A5C;border-radius:10px;padding:16px 20px;margin-bottom:14px}
+.page-header h1{font-size:17px;font-weight:700;color:#fff;margin-bottom:3px}
+.page-header p{font-size:12px;color:#AABBDD}
+.progress{display:flex;gap:5px;margin-bottom:14px}
+.ps{flex:1;height:5px;border-radius:3px;background:#D3D1C7;transition:background .4s}
+.ps.done{background:#1A3A5C}
+.ps.active{background:#378ADD}
+.card{background:#fff;border:1px solid #E0E0E0;border-radius:12px;margin-bottom:12px;overflow:hidden;transition:opacity .4s}
+.card.locked{opacity:.35;pointer-events:none}
+.card-head{background:#F8F9FC;border-bottom:1px solid #E0E0E0;padding:11px 16px;display:flex;align-items:center;gap:10px}
+.sc{width:28px;height:28px;border-radius:50%;background:#1A3A5C;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.card-head h2{font-size:14px;font-weight:700;color:#1A1A2E}
+.card-head p{font-size:12px;color:#666;margin-top:1px}
+.cb{padding:14px 16px}
+.scenario{background:#EAF0FA;border-left:4px solid #1A3A5C;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#1A3A5C;margin-bottom:12px;line-height:1.6}
+.qtext{font-size:14px;font-weight:700;margin-bottom:10px;line-height:1.5}
+.opt{width:100%;text-align:left;padding:10px 14px;margin-bottom:6px;font-size:13px;border:1px solid #D0D0D0;border-radius:8px;background:#fff;cursor:pointer;color:#1A1A2E;line-height:1.4}
+.opt:hover{background:#F0F4FB}
+.opt.correct{background:#EAF3DE;border-color:#3B6D11;color:#27500A;font-weight:500}
+.opt.wrong{background:#FFEBEE;border-color:#C62828;color:#7F1F1F}
+.opt.dimmed{opacity:.4;pointer-events:none}
+.fb{padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.6;margin-top:6px;display:none}
+.fb.show{display:block}
+.fb.ok{background:#EAF3DE;color:#27500A}
+.fb.info{background:#E6F1FB;color:#0C447C}
+.vergleich{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.vi{border-radius:8px;padding:12px;border:1px solid transparent}
+.vi.b2b{background:#EAF0FA;border-color:#B5D4F4}
+.vi.b2c{background:#EAF3DE;border-color:#C0DD97}
+.vi-label{font-size:11px;font-weight:700;margin-bottom:4px}
+.vi.b2b .vi-label{color:#0C447C}
+.vi.b2c .vi-label{color:#27500A}
+.vi-val{font-size:13px;line-height:1.5}
+.merke{background:#FFF8E1;border:1px solid #F9A825;border-radius:8px;padding:12px 14px;font-size:13px;margin-top:10px;line-height:1.6;color:#5D4037}
+.abschluss{background:#1A3A5C;border-radius:10px;padding:16px 20px;color:#fff;font-size:13px;line-height:1.7;margin-top:10px;display:none}
+.abschluss.show{display:block}
+.abschluss h3{font-size:15px;margin-bottom:8px;color:#DDEEFF}
+footer{text-align:center;font-size:11px;color:#AAAAAA;margin-top:16px;padding-bottom:20px}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Vertiefung: B2C-Verzug § 286 BGB</h1>
+  <p>Lernfeld 4 | Kaufleute für Büromanagement | Für Schnellere</p>
+</div>
+
+<div class="progress">
+  <div class="ps active" id="p1"></div>
+  <div class="ps" id="p2"></div>
+  <div class="ps" id="p3"></div>
+</div>
+
+<!-- KARTE 1: B2B vs B2C -->
+<div class="card" id="card1">
+  <div class="card-head">
+    <div class="sc">1</div>
+    <div><h2>B2B vs. B2C – Wann tritt Verzug ein?</h2><p>§ 286 BGB</p></div>
+  </div>
+  <div class="cb">
+    <div class="scenario">Im Fall der Kasseler Lichtkonzepte ist die Herkules Event GmbH ein Unternehmen (B2B). Der Verzug trat automatisch nach 30 Tagen ein – ohne Mahnung.</div>
+    <div class="qtext">Was gilt wenn der Schuldner kein Unternehmen sondern ein Verbraucher ist (B2C)?</div>
+    <button class="opt" onclick="q1('a')">a) Verzug tritt auch automatisch nach 30 Tagen ein – genauso wie bei B2B.</button>
+    <button class="opt" onclick="q1('b')">b) Verzug tritt nur ein wenn die Rechnung einen ausdrücklichen Hinweis auf die 30-Tage-Folge enthält – sonst ist eine Mahnung nötig.</button>
+    <button class="opt" onclick="q1('c')">c) Bei Verbrauchern kann kein Verzug eintreten – sie sind gesetzlich geschützt.</button>
+    <div id="fb1" class="fb"></div>
+  </div>
+</div>
+
+<!-- KARTE 2: Was fehlt auf der Rechnung -->
+<div class="card locked" id="card2">
+  <div class="card-head">
+    <div class="sc">2</div>
+    <div><h2>Was fehlt auf Herrn Kellers Rechnung?</h2><p>§ 286 Abs. 3 Satz 2 BGB</p></div>
+  </div>
+  <div class="cb">
+    <div class="scenario">Stell dir vor: Herr Keller ist Privatperson. Die Kasseler Lichtkonzepte hat ihm eine Rechnung geschickt – aber ohne jeden Hinweis auf die 30-Tage-Regelung.</div>
+    <div class="qtext">Ist Herr Keller nach 30 Tagen automatisch im Verzug?</div>
+    <button class="opt" onclick="q2('a')">a) Ja – die 30 Tage gelten immer, egal ob B2B oder B2C.</button>
+    <button class="opt" onclick="q2('b')">b) Nein – ohne Hinweis auf der Rechnung tritt bei Verbrauchern kein automatischer Verzug ein.</button>
+    <button class="opt" onclick="q2('c')">c) Ja – aber nur wenn Herr Keller die Rechnung erhalten hat.</button>
+    <div id="fb2" class="fb"></div>
+
+    <div id="vergleich" style="display:none;margin-top:14px">
+      <div class="vergleich">
+        <div class="vi b2b">
+          <div class="vi-label">B2B – Herkules Event GmbH</div>
+          <div class="vi-val">§ 286 Abs. 3 Satz 1:<br>Automatisch nach 30 Tagen – kein Hinweis auf Rechnung nötig.</div>
+        </div>
+        <div class="vi b2c">
+          <div class="vi-label">B2C – Herr Keller privat</div>
+          <div class="vi-val">§ 286 Abs. 3 Satz 2:<br>Nur automatisch wenn Rechnung ausdrücklich auf die 30-Tage-Folge hinweist.</div>
+        </div>
+      </div>
+      <div class="merke">
+        <strong>Merke:</strong> Der Gesetzgeber schützt Verbraucher stärker. Ein Unternehmer muss wissen, dass er zahlen muss. Ein Verbraucher soll ausdrücklich darauf hingewiesen werden – sonst ist eine Mahnung erforderlich.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- KARTE 3: Was muss passieren -->
+<div class="card locked" id="card3">
+  <div class="card-head">
+    <div class="sc">3</div>
+    <div><h2>Was muss passieren um Verzug auszulösen?</h2><p>Herr Keller als Privatperson</p></div>
+  </div>
+  <div class="cb">
+    <div class="scenario">Die Rechnung an Herrn Keller enthält keinen Hinweis auf die 30-Tage-Folge. Er hat nach 30 Tagen noch nicht gezahlt.</div>
+    <div class="qtext">Was muss passieren damit Herr Keller in Verzug gerät?</div>
+    <button class="opt" onclick="q3('a')">a) Nichts – Verzug tritt automatisch ein.</button>
+    <button class="opt" onclick="q3('b')">b) Die Kasseler Lichtkonzepte muss Herrn Keller mahnen – erst dann tritt Verzug ein.</button>
+    <button class="opt" onclick="q3('c')">c) Die Kasseler Lichtkonzepte muss Klage einreichen.</button>
+    <div id="fb3" class="fb"></div>
+    <div id="abschluss" class="abschluss">
+      <h3>Gut gemacht!</h3>
+      Bei B2C-Kunden ohne Hinweis auf der Rechnung ist eine Mahnung erforderlich um Verzug auszulösen (§ 286 Abs. 1 BGB). Erst ab dem Tag nach Zugang der Mahnung laufen Verzugszinsen.<br><br>
+      <strong>Der Unterschied auf einen Blick:</strong><br>
+      B2B → automatisch nach 30 Tagen (§ 286 Abs. 3 S. 1)<br>
+      B2C ohne Hinweis → erst nach Mahnung (§ 286 Abs. 1)<br>
+      B2C mit Hinweis auf Rechnung → automatisch nach 30 Tagen (§ 286 Abs. 3 S. 2)
+    </div>
+  </div>
+</div>
+
+<footer>Lernfeld 4 | Kaufleute für Büromanagement | Martin-Luther-King-Schule Kassel</footer>
+
+<script>
+function unlock(n, prog) {
+  document.getElementById('card'+n).classList.remove('locked');
+  document.getElementById('p'+prog).classList.add('done');
+  const nx = document.getElementById('p'+(prog+1));
+  if(nx) nx.classList.add('active');
+}
+
+function showFb(id, type, text) {
+  const el = document.getElementById(id);
+  el.className = 'fb show ' + type;
+  el.textContent = text;
+}
+
+function lockOpts(cardId) {
+  document.querySelectorAll('#'+cardId+' .opt').forEach(b => b.style.pointerEvents='none');
+}
+
+function markOpts(cardId, chosen, correct) {
+  document.querySelectorAll('#'+cardId+' .opt').forEach((b,i) => {
+    const letter = ['a','b','c'][i];
+    if(letter === chosen) b.classList.add(chosen === correct ? 'correct' : 'wrong');
+    else b.classList.add('dimmed');
+    b.style.pointerEvents = 'none';
+  });
+}
+
+function q1(ans) {
+  markOpts('card1', ans, 'b');
+  if(ans === 'b') {
+    showFb('fb1','ok','Richtig! § 286 Abs. 3 Satz 2 BGB: Bei Verbrauchern gilt die 30-Tage-Regel nur wenn die Rechnung einen ausdrücklichen Hinweis auf die Folge der Nichtzahlung enthält. Fehlt dieser Hinweis muss gemahnt werden.');
+    setTimeout(() => unlock(2, 1), 700);
+  } else if(ans === 'a') {
+    showFb('fb1','info','Nicht ganz. Die 30-Tage-Regel gilt bei B2B automatisch – bei B2C nur unter bestimmten Voraussetzungen. Schau auf § 286 Abs. 3 Satz 2 BGB.');
+  } else {
+    showFb('fb1','info','Nein. Auch Verbraucher können in Verzug geraten – aber die Voraussetzungen sind strenger als bei Unternehmen.');
+  }
+}
+
+function q2(ans) {
+  markOpts('card2', ans, 'b');
+  if(ans === 'b') {
+    showFb('fb2','ok','Richtig! Ohne ausdrücklichen Hinweis auf der Rechnung tritt bei Verbrauchern kein automatischer Verzug ein. Der Gesetzgeber schützt Verbraucher stärker als Unternehmen.');
+    document.getElementById('vergleich').style.display = 'block';
+    setTimeout(() => unlock(3, 2), 700);
+  } else if(ans === 'a') {
+    showFb('fb2','info','Das gilt nur für B2B. Bei Verbrauchern ist § 286 Abs. 3 Satz 2 BGB zu beachten – dort steht eine wichtige Einschränkung.');
+  } else {
+    showFb('fb2','info','Der Rechnungszugang ist eine Voraussetzung für den Fristbeginn – aber allein nicht ausreichend. Was muss die Rechnung zusätzlich enthalten?');
+  }
+}
+
+function q3(ans) {
+  markOpts('card3', ans, 'b');
+  if(ans === 'b') {
+    showFb('fb3','ok','Richtig! Eine Mahnung ist erforderlich (§ 286 Abs. 1 BGB). Erst ab dem Tag nach Zugang der Mahnung gerät Herr Keller in Verzug und Verzugszinsen laufen.');
+    setTimeout(() => {
+      document.getElementById('abschluss').classList.add('show');
+      document.getElementById('p3').classList.add('done');
+    }, 700);
+  } else if(ans === 'a') {
+    showFb('fb3','info','Das wäre bei B2B richtig – aber bei B2C ohne Hinweis auf der Rechnung reicht das nicht. Was muss die Kasseler Lichtkonzepte aktiv tun?');
+  } else {
+    showFb('fb3','info','Eine Klage wäre übertrieben und zu aufwändig. Es gibt einen einfacheren ersten Schritt der Verzug auslöst.');
+  }
+}
+</script>
+</body>
+</html>
