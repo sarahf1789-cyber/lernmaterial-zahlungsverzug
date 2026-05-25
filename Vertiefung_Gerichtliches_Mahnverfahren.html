@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gerichtliches Mahnverfahren</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#F5F7FA;color:#1A1A2E;padding:16px;max-width:580px;margin:0 auto}
+.page-header{background:#1A3A5C;border-radius:10px;padding:16px 20px;margin-bottom:14px}
+.page-header h1{font-size:17px;font-weight:700;color:#fff;margin-bottom:3px}
+.page-header p{font-size:12px;color:#AABBDD}
+.card{background:#fff;border:1px solid #E0E0E0;border-radius:12px;margin-bottom:12px;overflow:hidden}
+.card-head{background:#F8F9FC;border-bottom:1px solid #E0E0E0;padding:11px 16px}
+.card-head h2{font-size:14px;font-weight:700;color:#1A1A2E}
+.card-head p{font-size:12px;color:#666;margin-top:2px}
+.cb{padding:14px 16px}
+.infotext{background:#EAF0FA;border-left:4px solid #1A3A5C;border-radius:0 6px 6px 0;padding:12px 14px;font-size:13px;color:#1A1A2E;line-height:1.8;margin-bottom:14px}
+.infotext strong{color:#1A3A5C}
+
+/* Ablauf-Schritte */
+.ablauf{margin-bottom:16px}
+.ablauf-schritt{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.as-nr{width:26px;height:26px;border-radius:50%;background:#1A3A5C;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.as-text{font-size:13px;line-height:1.6;color:#1A1A2E}
+.as-sub{font-size:12px;color:#888;margin-top:2px}
+
+/* Wortbank */
+.wortbank{display:flex;flex-wrap:wrap;gap:8px;padding:12px;background:#F5F7FA;border-radius:8px;margin-bottom:16px;min-height:50px}
+.wort{padding:6px 12px;background:#fff;border:1px solid #B5D4F4;border-radius:20px;font-size:13px;color:#1A3A5C;cursor:grab;user-select:none;transition:opacity .2s}
+.wort:active{cursor:grabbing}
+.wort.used{opacity:.3;pointer-events:none}
+
+/* Lückentext */
+.lueckentext{font-size:14px;line-height:2.4;color:#1A1A2E}
+.luecke{display:inline-block;min-width:130px;border-bottom:2px solid #1A3A5C;padding:2px 6px;margin:0 3px;text-align:center;font-size:13px;font-weight:700;color:#1A3A5C;cursor:pointer;vertical-align:middle;border-radius:4px 4px 0 0;background:#EAF0FA;transition:background .2s}
+.luecke:hover{background:#D0E4F7}
+.luecke.filled{background:#EAF0FA;border-color:#1A3A5C}
+.luecke.correct{background:#EAF3DE;border-color:#3B6D11;color:#27500A}
+.luecke.wrong{background:#FFEBEE;border-color:#C62828;color:#7F1F1F}
+.luecke.empty-err{background:#FFF3E0;border-color:#E65100}
+
+.auswerten-btn{width:100%;padding:12px;font-size:14px;font-weight:700;border:none;border-radius:8px;background:#1A3A5C;color:#fff;cursor:pointer;margin-top:14px}
+.auswerten-btn:hover{background:#2A5A8C}
+.reset-btn{width:100%;padding:9px;font-size:13px;border:1px solid #D0D0D0;border-radius:8px;background:#fff;cursor:pointer;margin-top:8px;color:#555}
+
+.fb-block{margin-top:14px;display:none}
+.fb-block.show{display:block}
+.fb-zeile{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:6px;line-height:1.5}
+.fb-zeile.ok{background:#EAF3DE;color:#27500A}
+.fb-zeile.err{background:#FFEBEE;color:#7F1F1F}
+.abschluss{background:#1A3A5C;border-radius:10px;padding:16px 20px;color:#fff;font-size:13px;line-height:1.8;margin-top:10px;display:none}
+.abschluss.show{display:block}
+.abschluss h3{font-size:15px;margin-bottom:8px;color:#DDEEFF}
+footer{text-align:center;font-size:11px;color:#AAAAAA;margin-top:16px;padding-bottom:20px}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Für Schnellere: Gerichtliches Mahnverfahren</h1>
+  <p>Was passiert wenn das kaufmännische Mahnverfahren erfolglos bleibt?</p>
+</div>
+
+<!-- INFOTEXT -->
+<div class="card">
+  <div class="card-head">
+    <h2>Das gerichtliche Mahnverfahren – kurz erklärt</h2>
+    <p>Lies den Text sorgfältig durch bevor du die Aufgabe bearbeitest</p>
+  </div>
+  <div class="cb">
+    <div class="infotext">
+      Wenn das kaufmännische Mahnverfahren erfolglos bleibt, kann der Gläubiger das <strong>gerichtliche Mahnverfahren</strong> einleiten. Es ist schneller und günstiger als eine Klage.<br><br>
+      Der Gläubiger stellt beim zuständigen Amtsgericht einen Antrag auf Erlass eines <strong>Mahnbescheids</strong>. Dieser wird dem Schuldner zugestellt. Der Schuldner hat dann drei Möglichkeiten: er kann <strong>zahlen</strong>, <strong>Widerspruch einlegen</strong> oder <strong>schweigen</strong>.<br><br>
+      Schweigt der Schuldner, beantragt der Gläubiger einen <strong>Vollstreckungsbescheid</strong>. Legt der Schuldner auch dagegen keinen Einspruch ein, kann der Gläubiger die <strong>Zwangsvollstreckung</strong> einleiten – z.B. Pfändung von Lohn oder Konto.<br><br>Bleibt auch die Zwangsvollstreckung erfolglos, kann der Schuldner zur Abgabe einer <strong>Vermögensauskunft</strong> aufgefordert werden. Danach wird er in das <strong>Schuldnerverzeichnis</strong> eingetragen.
+    </div>
+
+    <div class="ablauf">
+      <div class="ablauf-schritt">
+        <div class="as-nr">1</div>
+        <div class="as-text">Gläubiger beantragt <strong>Mahnbescheid</strong> beim Amtsgericht
+          <div class="as-sub">Online möglich: online-mahnantrag.de</div>
+        </div>
+      </div>
+      <div class="ablauf-schritt">
+        <div class="as-nr">2</div>
+        <div class="as-text">Mahnbescheid wird dem Schuldner zugestellt
+          <div class="as-sub">Schuldner kann: zahlen | Widerspruch einlegen | schweigen</div>
+        </div>
+      </div>
+      <div class="ablauf-schritt">
+        <div class="as-nr">3</div>
+        <div class="as-text">Bei Schweigen: Gläubiger beantragt <strong>Vollstreckungsbescheid</strong>
+          <div class="as-sub">Einspruch noch möglich (2 Wochen)</div>
+        </div>
+      </div>
+      <div class="ablauf-schritt">
+        <div class="as-nr">4</div>
+        <div class="as-text">Bei weiterem Schweigen: <strong>Zwangsvollstreckung</strong>
+          <div class="as-sub">Pfändung von Lohn, Konto oder Vermögen</div>
+        </div>
+      </div>
+      <div class="ablauf-schritt">
+        <div class="as-nr">5</div>
+        <div class="as-text">Bei erfolgloser Zwangsvollstreckung: <strong>Vermögensauskunft</strong> + Eintrag ins <strong>Schuldnerverzeichnis</strong>
+          <div class="as-sub">Schuldner muss alle Vermögenswerte offenlegen</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LÜCKENTEXT -->
+<div class="card">
+  <div class="card-head">
+    <h2>Lückentext – klicke auf eine Lücke dann auf ein Wort</h2>
+    <p>Setze die richtigen Begriffe ein</p>
+  </div>
+  <div class="cb">
+
+    <!-- Wortbank -->
+    <div class="wortbank" id="wortbank">
+      <div class="wort" id="w_vollb" onclick="waehleWort('Vollstreckungsbescheid')">Vollstreckungsbescheid</div>
+      <div class="wort" id="w_zahlen" onclick="waehleWort('bezahlen')">bezahlen</div>
+      <div class="wort" id="w_schuld" onclick="waehleWort('Schuldnerverzeichnis')">Schuldnerverzeichnis</div>
+      <div class="wort" id="w_glaeu" onclick="waehleWort('Gläubiger')">Gläubiger</div>
+      <div class="wort" id="w_zwang" onclick="waehleWort('Zwangsvollstreckung')">Zwangsvollstreckung</div>
+      <div class="wort" id="w_wider" onclick="waehleWort('Widerspruch')">Widerspruch</div>
+      <div class="wort" id="w_mahnb" onclick="waehleWort('Mahnbescheid')">Mahnbescheid</div>
+      <div class="wort" id="w_schw" onclick="waehleWort('schweigen')">schweigen</div>
+    </div>
+
+    <!-- Lückentext -->
+    <div class="lueckentext">
+      Das gerichtliche Mahnverfahren wird eingeleitet, indem der
+      <span class="luecke" id="l1" onclick="setzeLuecke('l1')">___________</span>
+      beim zuständigen Amtsgericht einen Antrag auf Erlass eines
+      <span class="luecke" id="l2" onclick="setzeLuecke('l2')">___________</span>
+      stellt.<br><br>
+
+      Der Schuldner kann nun die Schulden
+      <span class="luecke" id="l3" onclick="setzeLuecke('l3')">___________</span>,
+      <span class="luecke" id="l4" onclick="setzeLuecke('l4')">___________</span>
+      einlegen oder
+      <span class="luecke" id="l5" onclick="setzeLuecke('l5')">___________</span>.<br><br>
+
+      Reagiert der Schuldner nicht, kann der Gläubiger einen
+      <span class="luecke" id="l6" onclick="setzeLuecke('l6')">___________</span>
+      beantragen. Erfolgt weiterhin keine Reaktion, kann der Gläubiger die
+      <span class="luecke" id="l7" onclick="setzeLuecke('l7')">___________</span>
+      einleiten. Bleibt diese erfolglos, wird der Schuldner in das
+      <span class="luecke" id="l8" onclick="setzeLuecke('l8')">___________</span>
+      eingetragen.
+    </div>
+
+    <button class="auswerten-btn" onclick="auswerten()">Auswerten →</button>
+    <button class="reset-btn" onclick="reset()">↺ Neu starten</button>
+
+    <div id="fb-block" class="fb-block"></div>
+    <div id="abschluss" class="abschluss">
+      <h3>Sehr gut!</h3>
+      Du kennst jetzt den vollständigen Ablauf des gerichtlichen Mahnverfahrens:<br>
+      Mahnbescheid → Zustellung → zahlen / Widerspruch / schweigen → Vollstreckungsbescheid → Zwangsvollstreckung → Schuldnerverzeichnis<br><br>
+      <strong>Für den Fall der Kasseler Lichtkonzepte:</strong><br>
+      Wenn die Herkules Event GmbH weiterhin nicht zahlt, kann Alva Bell direkt diesen Weg einschlagen – ohne vorher mahnen zu müssen, da der Verzug bereits eingetreten ist.
+    </div>
+  </div>
+</div>
+
+<footer>Lernfeld 4 | Kaufleute für Büromanagement | Martin-Luther-King-Schule Kassel</footer>
+
+<script>
+const loesungen = {
+  l1: 'Gläubiger',
+  l2: 'Mahnbescheid',
+  l3: 'bezahlen',
+  l4: 'Widerspruch',
+  l5: 'schweigen',
+  l6: 'Vollstreckungsbescheid',
+  l7: 'Zwangsvollstreckung',
+  l8: 'Schuldnerverzeichnis'
+};
+
+const wortIds = {
+  'Gläubiger': 'w_glaeu',
+  'Mahnbescheid': 'w_mahnb',
+  'bezahlen': 'w_zahlen',
+  'Widerspruch': 'w_wider',
+  'schweigen': 'w_schw',
+  'Vollstreckungsbescheid': 'w_vollb',
+  'Zwangsvollstreckung': 'w_zwang',
+  'Schuldnerverzeichnis': 'w_schuld'
+};
+
+let aktiveLuecke = null;
+let aktivesWort = null;
+let eingesetzt = {}; // luecke -> wort
+
+function waehleWort(wort) {
+  // Hebt Auswahl hervor
+  document.querySelectorAll('.wort').forEach(w => w.style.border = '1px solid #B5D4F4');
+  if(aktivesWort === wort) {
+    aktivesWort = null;
+    return;
+  }
+  aktivesWort = wort;
+  document.getElementById(wortIds[wort]).style.border = '2px solid #1A3A5C';
+
+  // Wenn bereits eine Lücke aktiv ist direkt einsetzen
+  if(aktiveLuecke) {
+    setzeLuecke(aktiveLuecke);
+  }
+}
+
+function setzeLuecke(lueckeId) {
+  if(!aktivesWort) {
+    // Kein Wort gewählt – Lücke als aktiv markieren
+    document.querySelectorAll('.luecke').forEach(l => l.style.background = '');
+    aktiveLuecke = lueckeId;
+    document.getElementById(lueckeId).style.background = '#D0E4F7';
+    return;
+  }
+
+  // Altes Wort aus Lücke zurückgeben
+  if(eingesetzt[lueckeId]) {
+    const altesWort = eingesetzt[lueckeId];
+    document.getElementById(wortIds[altesWort]).classList.remove('used');
+  }
+
+  // Wort einsetzen
+  eingesetzt[lueckeId] = aktivesWort;
+  const luecke = document.getElementById(lueckeId);
+  luecke.textContent = aktivesWort;
+  luecke.classList.add('filled');
+  luecke.style.background = '';
+
+  // Wort als benutzt markieren
+  document.getElementById(wortIds[aktivesWort]).classList.add('used');
+
+  // Reset Auswahl
+  document.querySelectorAll('.wort').forEach(w => w.style.border = '1px solid #B5D4F4');
+  aktivesWort = null;
+  aktiveLuecke = null;
+}
+
+function auswerten() {
+  let richtig = 0;
+  const fb = [];
+
+  Object.keys(loesungen).forEach(lueckeId => {
+    const luecke = document.getElementById(lueckeId);
+    const gesetzt = eingesetzt[lueckeId];
+    const korrekt = loesungen[lueckeId];
+
+    if(!gesetzt) {
+      luecke.classList.add('empty-err');
+      fb.push({ok:false, text:`✗ Lücke noch leer – richtig wäre: „${korrekt}"`});
+    } else if(gesetzt === korrekt) {
+      luecke.classList.remove('filled');
+      luecke.classList.add('correct');
+      richtig++;
+    } else {
+      luecke.classList.remove('filled');
+      luecke.classList.add('wrong');
+      fb.push({ok:false, text:`✗ „${gesetzt}" ist hier falsch – richtig wäre: „${korrekt}"`});
+    }
+  });
+
+  const block = document.getElementById('fb-block');
+  block.className = 'fb-block show';
+
+  if(richtig === 8) {
+    block.innerHTML = '<div class="fb-zeile ok">✓ Alle 8 Lücken richtig! Ausgezeichnet!</div>';
+    document.getElementById('abschluss').classList.add('show');
+  } else {
+    block.innerHTML = fb.map(f =>
+      `<div class="fb-zeile ${f.ok?'ok':'err'}">${f.text}</div>`
+    ).join('') + `<div class="fb-zeile ok" style="margin-top:4px">${richtig} von 7 richtig – korrigiere die markierten Lücken.</div>`;
+  }
+}
+
+function reset() {
+  // Alle Lücken zurücksetzen
+  Object.keys(loesungen).forEach(id => {
+    const l = document.getElementById(id);
+    l.textContent = '___________';
+    l.className = 'luecke';
+    l.style.background = '';
+  });
+  // Alle Wörter zurücksetzen
+  document.querySelectorAll('.wort').forEach(w => {
+    w.classList.remove('used');
+    w.style.border = '1px solid #B5D4F4';
+  });
+  eingesetzt = {};
+  aktivesWort = null;
+  aktiveLuecke = null;
+  document.getElementById('fb-block').className = 'fb-block';
+  document.getElementById('fb-block').innerHTML = '';
+  document.getElementById('abschluss').className = 'abschluss';
+}
+</script>
+</body>
+</html>
