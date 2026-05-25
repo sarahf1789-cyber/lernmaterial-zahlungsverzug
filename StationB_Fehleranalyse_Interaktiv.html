@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fehleranalyse: Verzugszinsen</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#F5F7FA;color:#1A1A2E;padding:16px;max-width:580px;margin:0 auto}
+.page-header{background:#1A3A5C;border-radius:10px;padding:16px 20px;margin-bottom:14px}
+.page-header h1{font-size:17px;font-weight:700;color:#fff;margin-bottom:3px}
+.page-header p{font-size:12px;color:#AABBDD}
+.card{background:#fff;border:1px solid #E0E0E0;border-radius:12px;margin-bottom:12px;overflow:hidden}
+.card-head{background:#F8F9FC;border-bottom:1px solid #E0E0E0;padding:11px 16px}
+.card-head h2{font-size:14px;font-weight:700;color:#1A1A2E}
+.card-head p{font-size:12px;color:#666;margin-top:2px}
+.cb{padding:14px 16px}
+.scenario{background:#EAF0FA;border-left:4px solid #1A3A5C;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#1A3A5C;margin-bottom:12px;line-height:1.6}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.ii{background:#F5F7FA;border-radius:8px;padding:10px 12px}
+.ii-label{font-size:11px;color:#888;margin-bottom:3px}
+.ii-val{font-size:14px;font-weight:700}
+.ii-val.red{color:#C62828}
+.ii-val.green{color:#3B6D11}
+
+/* Zeilen */
+.zeile{border:1px solid #E0E0E0;border-radius:8px;margin-bottom:8px;overflow:hidden;cursor:pointer;transition:border-color .2s}
+.zeile:hover{border-color:#1A3A5C}
+.zeile.markiert-fehler{border-color:#C62828;background:#FFFAFA}
+.zeile.markiert-ok{border-color:#3B6D11;background:#F9FFF9}
+.zeile-header{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}
+.zeile-label{font-size:13px;font-weight:700;color:#1A1A2E}
+.zeile-wert{font-size:13px;color:#555}
+.zeile-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:8px;flex-shrink:0}
+.badge-fehler{background:#FFEBEE;color:#C62828}
+.badge-ok{background:#EAF3DE;color:#3B6D11}
+.badge-neutral{background:#F5F7FA;color:#888;border:1px solid #DDD}
+
+/* Korrektur-Eingabe */
+.korrektur-box{background:#FFF8E1;border-top:1px solid #F9A825;padding:10px 14px;display:none}
+.korrektur-box.open{display:block}
+.korrektur-box label{font-size:12px;color:#5D4037;display:block;margin-bottom:5px}
+.korrektur-box input{width:140px;padding:6px 10px;font-size:13px;border:1px solid #D0D0D0;border-radius:6px;background:#fff}
+.korrektur-box .unit{font-size:12px;color:#888;margin-left:6px}
+
+.hinweis{font-size:12px;color:#888;font-style:italic;margin-bottom:12px}
+
+.auswerten-btn{width:100%;padding:12px;font-size:14px;font-weight:700;border:none;border-radius:8px;background:#1A3A5C;color:#fff;cursor:pointer;margin-top:6px}
+.auswerten-btn:hover{background:#2A5A8C}
+
+/* Feedback */
+.fb-zeile{padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:6px;line-height:1.5}
+.fb-zeile.ok{background:#EAF3DE;color:#27500A}
+.fb-zeile.err{background:#FFEBEE;color:#7F1F1F}
+.feedback-block{margin-top:14px;display:none}
+.feedback-block.show{display:block}
+
+.abschluss{background:#1A3A5C;border-radius:10px;padding:16px 20px;color:#fff;font-size:13px;line-height:1.7;margin-top:14px;display:none}
+.abschluss.show{display:block}
+.abschluss h3{font-size:15px;margin-bottom:8px;color:#DDEEFF}
+footer{text-align:center;font-size:11px;color:#AAAAAA;margin-top:16px;padding-bottom:20px}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Station B – Fehleranalyse: Verzugszinsen</h1>
+  <p>Lernfeld 4 | Kaufleute für Büromanagement | Wahlstation</p>
+</div>
+
+<!-- SACHVERHALT -->
+<div class="card">
+  <div class="card-head">
+    <h2>Sachverhalt</h2>
+    <p>Lies den Fall sorgfältig durch</p>
+  </div>
+  <div class="cb">
+    <div class="scenario">Die Auszubildende Lisa soll den Verzugsschaden für Herrn Keller berechnen – aber sie verwechselt B2B und B2C. Finde alle Fehler und korrigiere sie!</div>
+    <div class="info-grid">
+      <div class="ii"><div class="ii-label">Kunde</div><div class="ii-val">Herr Keller</div></div>
+      <div class="ii"><div class="ii-label">Kundentyp</div><div class="ii-val green">Privatperson (B2C)</div></div>
+      <div class="ii"><div class="ii-label">Rechnungsbetrag</div><div class="ii-val">1.200,00 EUR</div></div>
+      <div class="ii"><div class="ii-label">Verzugsbeginn</div><div class="ii-val red">21.05.20xx</div></div>
+      <div class="ii"><div class="ii-label">Berechnungstag</div><div class="ii-val">29.05.20xx</div></div>
+      <div class="ii"><div class="ii-label">Basiszinssatz</div><div class="ii-val">1,27 % p.a.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- LISAS BERECHNUNG -->
+<div class="card">
+  <div class="card-head">
+    <h2>Lisas Berechnung – klicke auf fehlerhafte Zeilen</h2>
+    <p>Klicke auf eine Zeile um sie als Fehler zu markieren und zu korrigieren</p>
+  </div>
+  <div class="cb">
+    <p class="hinweis">Tipp: Nicht alle Zeilen sind falsch. Klicke nur auf die die du für falsch hältst.</p>
+
+    <!-- Zeile 1: Geschäftsart – RICHTIG -->
+    <div class="zeile" id="z1">
+      <div class="zeile-header" onclick="toggleZeile(this)" style="cursor:pointer">
+        <div>
+          <div class="zeile-label">Geschäftsart</div>
+          <div class="zeile-wert">Herr Keller ist Verbraucher → B2C</div>
+        </div>
+        <span class="zeile-badge badge-neutral" id="badge1">prüfen</span>
+      </div>
+      <div class="korrektur-box" id="kb1">
+        <label>Deine Korrektur:</label>
+        <input type="text" id="k1" placeholder="Was ist richtig?">
+      </div>
+    </div>
+
+    <!-- Zeile 2: Zinssatz – FALSCH -->
+    <div class="zeile" id="z2">
+      <div class="zeile-header" onclick="toggleZeile(this)" style="cursor:pointer">
+        <div>
+          <div class="zeile-label">Zinssatz</div>
+          <div class="zeile-wert">9 % + 1,27 % = 10,27 %</div>
+        </div>
+        <span class="zeile-badge badge-neutral" id="badge2">prüfen</span>
+      </div>
+      <div class="korrektur-box" id="kb2">
+        <label>Richtiger Zinssatz:</label>
+        <input type="number" id="k2" placeholder="?" step="0.01"> <span class="unit">%</span>
+      </div>
+    </div>
+
+    <!-- Zeile 3: Verzugstage – RICHTIG -->
+    <div class="zeile" id="z3">
+      <div class="zeile-header" onclick="toggleZeile(this)" style="cursor:pointer">
+        <div>
+          <div class="zeile-label">Verzugstage</div>
+          <div class="zeile-wert">21.05. bis 29.05. = 9 Tage</div>
+        </div>
+        <span class="zeile-badge badge-neutral" id="badge3">prüfen</span>
+      </div>
+      <div class="korrektur-box" id="kb3">
+        <label>Deine Korrektur:</label>
+        <input type="text" id="k3" placeholder="Was ist richtig?">
+      </div>
+    </div>
+
+    <!-- Zeile 4: Zinsen – FALSCH -->
+    <div class="zeile" id="z4">
+      <div class="zeile-header" onclick="toggleZeile(this)" style="cursor:pointer">
+        <div>
+          <div class="zeile-label">Verzugszinsen</div>
+          <div class="zeile-wert">1.200 × 10,27 % × 9 / 36.000 = 3,08 EUR</div>
+        </div>
+        <span class="zeile-badge badge-neutral" id="badge4">prüfen</span>
+      </div>
+      <div class="korrektur-box" id="kb4">
+        <label>Richtige Verzugszinsen:</label>
+        <input type="number" id="k4" placeholder="?" step="0.01"> <span class="unit">EUR</span>
+      </div>
+    </div>
+
+    <!-- Zeile 5: Pauschale – FALSCH -->
+    <div class="zeile" id="z5">
+      <div class="zeile-header" onclick="toggleZeile(this)" style="cursor:pointer">
+        <div>
+          <div class="zeile-label">Verzugspauschale</div>
+          <div class="zeile-wert">+ 40,00 EUR</div>
+        </div>
+        <span class="zeile-badge badge-neutral" id="badge5">prüfen</span>
+      </div>
+      <div class="korrektur-box" id="kb5">
+        <label>Richtige Pauschale (0 oder 40):</label>
+        <input type="number" id="k5" placeholder="?" step="1" min="0" max="40"> <span class="unit">EUR</span>
+      </div>
+    </div>
+
+    <!-- Zeile 6: Gesamtschaden – FALSCH -->
+    <div class="zeile" id="z6">
+      <div class="zeile-header" onclick="toggleZeile(this)" style="cursor:pointer">
+        <div>
+          <div class="zeile-label">Gesamtschaden</div>
+          <div class="zeile-wert">3,08 EUR + 40,00 EUR = 43,08 EUR</div>
+        </div>
+        <span class="zeile-badge badge-neutral" id="badge6">prüfen</span>
+      </div>
+      <div class="korrektur-box" id="kb6">
+        <label>Richtiger Gesamtschaden:</label>
+        <input type="number" id="k6" placeholder="?" step="0.01"> <span class="unit">EUR</span>
+      </div>
+    </div>
+
+    <button class="auswerten-btn" onclick="auswerten()">Auswerten →</button>
+
+    <div id="feedback-block" class="feedback-block"></div>
+    <div id="abschluss" class="abschluss">
+      <h3>Gut gemacht!</h3>
+      Lisa hat <strong>drei Fehler</strong> gemacht:<br>
+      1. Falscher Zinssatz: 9 % (B2B) statt 5 % (B2C)<br>
+      2. Verzugspauschale 40 EUR: gilt nicht bei Verbrauchern (§ 288 Abs. 5 BGB)<br>
+      3. Gesamtschaden: zu hoch wegen der beiden Fehler<br><br>
+      <strong>Richtige Werte:</strong><br>
+      Zinssatz: 6,27 % | Zinsen: 1,88 EUR | Pauschale: 0 EUR | Gesamtschaden: 1,88 EUR
+    </div>
+  </div>
+</div>
+
+<footer>Lernfeld 4 | Kaufleute für Büromanagement | Martin-Luther-King-Schule Kassel</footer>
+
+<script>
+const KAPITAL=1200, TAGE=9, BASIS=1.27, AUFSCHLAG=5;
+const ZS = AUFSCHLAG+BASIS;
+const ZINSEN = Math.round((KAPITAL*ZS*TAGE)/(100*360)*100)/100;
+
+// true = als Fehler markiert
+const markiert = {1:false,2:false,3:false,4:false,5:false,6:false};
+
+function toggleZeile(header) {
+  const zeile = header.closest('.zeile');
+  const nr = parseInt(zeile.id.replace('z',''));
+  markiert[nr] = !markiert[nr];
+  const badge = document.getElementById('badge'+nr);
+  const kb = document.getElementById('kb'+nr);
+  if(markiert[nr]) {
+    zeile.classList.add('markiert-fehler');
+    zeile.classList.remove('markiert-ok');
+    badge.className = 'zeile-badge badge-fehler';
+    badge.textContent = '✗ Fehler';
+    kb.classList.add('open');
+  } else {
+    zeile.classList.remove('markiert-fehler');
+    badge.className = 'zeile-badge badge-neutral';
+    badge.textContent = 'prüfen';
+    kb.classList.remove('open');
+  }
+}
+
+function auswerten() {
+  const feedback = [];
+  let alleRichtig = true;
+
+  // Zeile 1: Geschäftsart – RICHTIG, sollte NICHT markiert sein
+  if(markiert[1]) {
+    feedback.push({ok:false, text:'✗ Zeile 1 (Geschäftsart): Das war richtig – Herr Keller ist tatsächlich B2C.'});
+    alleRichtig = false;
+  } else {
+    document.getElementById('z1').classList.add('markiert-ok');
+    document.getElementById('badge1').className = 'zeile-badge badge-ok';
+    document.getElementById('badge1').textContent = '✓ Richtig';
+    feedback.push({ok:true, text:'✓ Zeile 1 (Geschäftsart): Korrekt – diese Zeile war richtig.'});
+  }
+
+  // Zeile 2: Zinssatz – FALSCH, sollte markiert sein mit 6.27
+  if(!markiert[2]) {
+    feedback.push({ok:false, text:'✗ Zeile 2 (Zinssatz): Das war ein Fehler! Bei B2C gilt 5 % + 1,27 % = 6,27 % – nicht 9 %.'});
+    alleRichtig = false;
+  } else {
+    const val = parseFloat(document.getElementById('k2').value);
+    if(Math.abs(val-6.27)<0.02) {
+      feedback.push({ok:true, text:'✓ Zeile 2 (Zinssatz): Fehler erkannt und richtig korrigiert! 5 % + 1,27 % = 6,27 %.'});
+    } else {
+      feedback.push({ok:false, text:`✗ Zeile 2 (Zinssatz): Fehler erkannt, aber Korrektur nicht ganz richtig. Richtig: 6,27 %`});
+      alleRichtig = false;
+    }
+  }
+
+  // Zeile 3: Verzugstage – RICHTIG
+  if(markiert[3]) {
+    feedback.push({ok:false, text:'✗ Zeile 3 (Verzugstage): Das war richtig – 9 Tage stimmt.'});
+    alleRichtig = false;
+  } else {
+    document.getElementById('z3').classList.add('markiert-ok');
+    document.getElementById('badge3').className = 'zeile-badge badge-ok';
+    document.getElementById('badge3').textContent = '✓ Richtig';
+    feedback.push({ok:true, text:'✓ Zeile 3 (Verzugstage): Korrekt – diese Zeile war richtig.'});
+  }
+
+  // Zeile 4: Zinsen – FALSCH
+  if(!markiert[4]) {
+    feedback.push({ok:false, text:`✗ Zeile 4 (Verzugszinsen): Das war ein Fehler! Richtig: ${ZINSEN.toFixed(2)} EUR`});
+    alleRichtig = false;
+  } else {
+    const val = parseFloat(document.getElementById('k4').value);
+    if(Math.abs(val-ZINSEN)<0.05) {
+      feedback.push({ok:true, text:`✓ Zeile 4 (Verzugszinsen): Fehler erkannt und richtig korrigiert! ${ZINSEN.toFixed(2)} EUR`});
+    } else {
+      feedback.push({ok:false, text:`✗ Zeile 4 (Verzugszinsen): Fehler erkannt, aber Korrektur nicht ganz richtig. Richtig: ${ZINSEN.toFixed(2)} EUR`});
+      alleRichtig = false;
+    }
+  }
+
+  // Zeile 5: Pauschale – FALSCH
+  if(!markiert[5]) {
+    feedback.push({ok:false, text:'✗ Zeile 5 (Pauschale): Das war ein Fehler! Bei B2C gilt keine 40-EUR-Pauschale (§ 288 Abs. 5 BGB).'});
+    alleRichtig = false;
+  } else {
+    const val = parseFloat(document.getElementById('k5').value);
+    if(val===0) {
+      feedback.push({ok:true, text:'✓ Zeile 5 (Pauschale): Fehler erkannt und richtig korrigiert! Keine Pauschale bei B2C.'});
+    } else {
+      feedback.push({ok:false, text:'✗ Zeile 5 (Pauschale): Fehler erkannt, aber Korrektur falsch. Bei B2C gilt: 0 EUR Pauschale.'});
+      alleRichtig = false;
+    }
+  }
+
+  // Zeile 6: Gesamtschaden – FALSCH
+  if(!markiert[6]) {
+    feedback.push({ok:false, text:`✗ Zeile 6 (Gesamtschaden): Das war ein Fehler! Richtig: ${ZINSEN.toFixed(2)} EUR`});
+    alleRichtig = false;
+  } else {
+    const val = parseFloat(document.getElementById('k6').value);
+    if(Math.abs(val-ZINSEN)<0.05) {
+      feedback.push({ok:true, text:`✓ Zeile 6 (Gesamtschaden): Fehler erkannt und richtig korrigiert! ${ZINSEN.toFixed(2)} EUR`});
+    } else {
+      feedback.push({ok:false, text:`✗ Zeile 6 (Gesamtschaden): Fehler erkannt, aber Korrektur nicht ganz richtig. Richtig: ${ZINSEN.toFixed(2)} EUR`});
+      alleRichtig = false;
+    }
+  }
+
+  const block = document.getElementById('feedback-block');
+  block.className = 'feedback-block show';
+  block.innerHTML = feedback.map(f =>
+    `<div class="fb-zeile ${f.ok?'ok':'err'}">${f.text}</div>`
+  ).join('');
+
+  if(alleRichtig) {
+    document.getElementById('abschluss').classList.add('show');
+  }
+}
+</script>
+</body>
+</html>
