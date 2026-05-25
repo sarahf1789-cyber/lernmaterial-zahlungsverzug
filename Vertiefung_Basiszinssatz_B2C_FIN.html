@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vertiefung: Basiszinssatz & B2C</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#F5F7FA;color:#1A1A2E;padding:16px;max-width:580px;margin:0 auto}
+.page-header{background:#1A3A5C;border-radius:10px;padding:16px 20px;margin-bottom:14px}
+.page-header h1{font-size:17px;font-weight:700;color:#fff;margin-bottom:3px}
+.page-header p{font-size:12px;color:#AABBDD}
+.progress{display:flex;gap:5px;margin-bottom:14px}
+.ps{flex:1;height:5px;border-radius:3px;background:#D3D1C7;transition:background .4s}
+.ps.done{background:#1A3A5C}
+.ps.active{background:#378ADD}
+.card{background:#fff;border:1px solid #E0E0E0;border-radius:12px;margin-bottom:12px;overflow:hidden;transition:opacity .4s}
+.card.locked{opacity:.35;pointer-events:none}
+.card-head{background:#F8F9FC;border-bottom:1px solid #E0E0E0;padding:11px 16px;display:flex;align-items:center;gap:10px}
+.sc{width:28px;height:28px;border-radius:50%;background:#1A3A5C;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sc.g{background:#3B6D11}
+.card-head h2{font-size:14px;font-weight:700;color:#1A1A2E}
+.card-head p{font-size:12px;color:#666;margin-top:1px}
+.cb{padding:14px 16px}
+.scenario{background:#EAF0FA;border-left:4px solid #1A3A5C;border-radius:0 6px 6px 0;padding:10px 14px;font-size:13px;color:#1A3A5C;margin-bottom:12px;line-height:1.6}
+.qtext{font-size:14px;font-weight:700;margin-bottom:10px;line-height:1.5}
+.opt{width:100%;text-align:left;padding:10px 14px;margin-bottom:6px;font-size:13px;border:1px solid #D0D0D0;border-radius:8px;background:#fff;cursor:pointer;color:#1A1A2E;line-height:1.4}
+.opt:hover{background:#F0F4FB}
+.opt.correct{background:#EAF3DE;border-color:#3B6D11;color:#27500A;font-weight:500}
+.opt.wrong{background:#FFEBEE;border-color:#C62828;color:#7F1F1F}
+.opt.dimmed{opacity:.4;pointer-events:none}
+.fb{padding:10px 14px;border-radius:8px;font-size:13px;line-height:1.6;margin-top:6px;display:none}
+.fb.show{display:block}
+.fb.ok{background:#EAF3DE;color:#27500A}
+.fb.info{background:#E6F1FB;color:#0C447C}
+.fb.warn{background:#FFF8E1;color:#633806}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.ii{background:#F5F7FA;border-radius:8px;padding:10px 12px}
+.ii-label{font-size:11px;color:#888;margin-bottom:3px}
+.ii-val{font-size:14px;font-weight:700}
+.ii-val.red{color:#C62828}
+.ii-val.green{color:#3B6D11}
+.ii-val.hidden-val{color:#D3D1C7;font-style:italic;font-weight:400;font-size:13px}
+.step-label{font-size:12px;font-weight:700;color:#1A3A5C;margin:12px 0 6px}
+.formula{background:#F5F7FA;border-radius:8px;padding:10px 14px;font-size:13px;font-weight:700;text-align:center;color:#1A3A5C;margin:8px 0}
+.input-row{display:flex;align-items:center;gap:8px;margin-top:8px;flex-wrap:wrap}
+.input-row label{font-size:13px;color:#555;min-width:150px}
+.input-row input{width:100px;padding:7px 10px;font-size:14px;border:1px solid #D0D0D0;border-radius:8px;background:#fff;color:#1A1A2E}
+.input-row .unit{font-size:13px;color:#888}
+.btn{display:inline-block;padding:7px 18px;font-size:13px;font-weight:500;border:1px solid #1A3A5C;border-radius:8px;background:#fff;color:#1A3A5C;cursor:pointer;margin-top:8px}
+.btn:hover{background:#EAF0FA}
+.btn.g{border-color:#3B6D11;color:#3B6D11}
+.btn.g:hover{background:#EAF3DE}
+.source{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid #EEE}
+.source:last-child{border-bottom:none;padding-bottom:0}
+.si{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:700}
+.si.bb{background:#EAF0FA;color:#1A3A5C}
+.si.ihk{background:#EAF3DE;color:#3B6D11}
+.si.ba{background:#FFF8E1;color:#854F0B}
+.stitle{font-size:13px;font-weight:700;color:#1A1A2E;margin-bottom:2px}
+.surl{font-size:11px;color:#888;font-family:monospace;margin-bottom:3px}
+.sdesc{font-size:12px;color:#555;line-height:1.5}
+.tag{display:inline-block;font-size:10px;padding:1px 6px;border-radius:3px;background:#EEE;color:#555;margin-right:3px;margin-top:2px}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.ci{border-radius:8px;padding:12px;border:1px solid transparent}
+.ci.b2b{background:#EAF0FA;border-color:#B5D4F4}
+.ci.b2c{background:#EAF3DE;border-color:#C0DD97}
+.ci-label{font-size:11px;font-weight:700;margin-bottom:4px}
+.ci.b2b .ci-label{color:#0C447C}
+.ci.b2c .ci-label{color:#27500A}
+.ci-val{font-size:18px;font-weight:700}
+.ci.b2b .ci-val{color:#185FA5}
+.ci.b2c .ci-val{color:#3B6D11}
+.ci-sub{font-size:11px;color:#888;margin-top:3px;line-height:1.5}
+.ci-sub.hidden-val{color:#D3D1C7;font-style:italic}
+.abschluss{background:#1A3A5C;border-radius:10px;padding:16px 20px;color:#fff;font-size:13px;line-height:1.7;margin-top:10px;display:none}
+.abschluss.show{display:block}
+.abschluss h3{font-size:15px;margin-bottom:8px;color:#DDEEFF}
+footer{text-align:center;font-size:11px;color:#AAAAAA;margin-top:16px;padding-bottom:20px}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>Vertiefung: Basiszinssatz & B2C-Berechnung</h1>
+  <p>Lernfeld 4 | Kaufleute für Büromanagement | Für Schnellere</p>
+</div>
+
+<div class="progress">
+  <div class="ps active" id="p1"></div>
+  <div class="ps" id="p2"></div>
+  <div class="ps" id="p3"></div>
+  <div class="ps" id="p4"></div>
+  <div class="ps" id="p5"></div>
+</div>
+
+<!-- KARTE 1: WER LEGT FEST -->
+<div class="card" id="card1">
+  <div class="card-head">
+    <div class="sc">1</div>
+    <div><h2>Wer legt den Basiszinssatz fest?</h2><p>§ 247 BGB</p></div>
+  </div>
+  <div class="cb">
+    <div class="scenario">Frau Bell bittet Sie, den aktuellen Basiszinssatz zu recherchieren. Er ändert sich zweimal im Jahr. Woher kommt dieser Wert eigentlich – und wer ist dafür zuständig?</div>
+    <div class="qtext">Wer berechnet und veröffentlicht den Basiszinssatz nach § 247 BGB?</div>
+    <button class="opt" onclick="q(1,'a','b')">a) Das Bundesministerium der Justiz</button>
+    <button class="opt" onclick="q(1,'b','b')">b) Die Deutsche Bundesbank auf Basis des EZB-Leitzinses</button>
+    <button class="opt" onclick="q(1,'c','b')">c) Die Europäische Zentralbank direkt</button>
+    <button class="opt" onclick="q(1,'d','b')">d) Das zuständige Amtsgericht</button>
+    <div id="fb1" class="fb"></div>
+  </div>
+</div>
+
+<!-- KARTE 2: WANN -->
+<div class="card locked" id="card2">
+  <div class="card-head">
+    <div class="sc">2</div>
+    <div><h2>Wann ändert sich der Basiszinssatz?</h2><p>Wichtig für die Debitorenbuchhaltung</p></div>
+  </div>
+  <div class="cb">
+    <div class="qtext">Zu welchem Zeitpunkt kann sich der Basiszinssatz verändern?</div>
+    <button class="opt" onclick="q(2,'a','c')">a) Monatlich nach jeder EZB-Sitzung</button>
+    <button class="opt" onclick="q(2,'b','c')">b) Jährlich zum 1. Januar</button>
+    <button class="opt" onclick="q(2,'c','c')">c) Zum 1. Januar und 1. Juli eines jeden Jahres (§ 247 Abs. 1 BGB)</button>
+    <button class="opt" onclick="q(2,'d','c')">d) Nur wenn der Bundestag das BGB ändert</button>
+    <div id="fb2" class="fb"></div>
+  </div>
+</div>
+
+<!-- KARTE 3: WO NACHSCHAUEN -->
+<div class="card locked" id="card3">
+  <div class="card-head">
+    <div class="sc">3</div>
+    <div><h2>Wo finden Sie den aktuellen Wert?</h2><p>Zuverlässige Quellen im Berufsalltag</p></div>
+  </div>
+  <div class="cb">
+    <div class="qtext">Sie sollen für Frau Bell den aktuellen Basiszinssatz recherchieren. Welche Quelle ist am zuverlässigsten?</div>
+    <button class="opt" onclick="q(3,'a','b')">a) Google-Suche „Basiszinssatz aktuell"</button>
+    <button class="opt" onclick="q(3,'b','b')">b) Deutsche Bundesbank (bundesbank.de) oder Bundesanzeiger</button>
+    <button class="opt" onclick="q(3,'c','b')">c) Im BGB-Text § 247 nachschlagen</button>
+    <button class="opt" onclick="q(3,'d','b')">d) Beim Steuerberater anrufen</button>
+    <div id="fb3" class="fb"></div>
+    <div id="quellen" style="display:none;margin-top:14px">
+      <div style="font-size:11px;font-weight:700;color:#888;letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">Zuverlässige Quellen im Überblick</div>
+      <div class="source">
+        <div class="si bb">BB</div>
+        <div><div class="stitle">Deutsche Bundesbank</div><div class="surl">bundesbank.de → Basiszinssatz § 247 BGB</div><div class="sdesc">Offizielle Quelle. Veröffentlichungspflicht nach § 247 Abs. 2 BGB im Bundesanzeiger. Immer aktuell zum Stichtag.</div><span class="tag">amtlich</span><span class="tag">kostenlos</span></div>
+      </div>
+      <div class="source">
+        <div class="si ihk">IHK</div>
+        <div><div class="stitle">IHK-Websites</div><div class="surl">ihk.de → Recht → Verzugszinsen</div><div class="sdesc">B2B- und B2C-Zinssätze fertig berechnet. Praktisch für den Berufsalltag.</div><span class="tag">praxisnah</span><span class="tag">B2B/B2C fertig</span></div>
+      </div>
+      <div class="source">
+        <div class="si ba">BA</div>
+        <div><div class="stitle">Bundesanzeiger</div><div class="surl">bundesanzeiger.de</div><div class="sdesc">Amtliche Pflichtveröffentlichung nach § 247 Abs. 2 BGB. Rechtlich verbindlich.</div><span class="tag">amtlich</span><span class="tag">gesetzlich vorgeschrieben</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- KARTE 4: B2C BERECHNUNG -->
+<div class="card locked" id="card4">
+  <div class="card-head">
+    <div class="sc g">4</div>
+    <div><h2>B2C-Berechnung: Was ändert sich?</h2><p>§ 288 Abs. 1 BGB – Verbrauchergeschäft</p></div>
+  </div>
+  <div class="cb">
+    <div class="scenario">Stell dir vor: Die Kasseler Lichtkonzepte hat dieselbe Leistung nicht an die Herkules Event GmbH, sondern an <strong>Herrn Keller privat</strong> als Verbraucher erbracht. Alle anderen Daten bleiben gleich.</div>
+
+    <div class="info-grid">
+      <div class="ii"><div class="ii-label">Rechnungsbetrag</div><div class="ii-val">4.800,00 EUR</div></div>
+      <div class="ii"><div class="ii-label">Verzugstage</div><div class="ii-val">9 Tage</div></div>
+      <div class="ii"><div class="ii-label">Basiszinssatz</div><div class="ii-val">1,27 % p.a.</div></div>
+      <div class="ii"><div class="ii-label">Geschäftsart</div><div class="ii-val green">B2C (Verbraucher)</div></div>
+      <div class="ii"><div class="ii-label">Aufschlag B2C</div><div class="ii-val hidden-val" id="show-aufschlag">noch berechnen...</div></div>
+      <div class="ii"><div class="ii-label">Zinssatz gesamt</div><div class="ii-val hidden-val" id="show-zinssatz">noch berechnen...</div></div>
+    </div>
+
+    <div class="step-label">a) Zinssatz bestimmen (§ 288 Abs. 1 BGB)</div>
+    <div class="input-row">
+      <label>Aufschlag bei B2C:</label>
+      <input type="number" id="aufschlag" placeholder="?" step="1" min="0" max="20">
+      <span class="unit">% + 1,27 % =</span>
+      <input type="number" id="zinssatz" placeholder="?" step="0.01">
+      <span class="unit">%</span>
+    </div>
+    <button class="btn" onclick="checkZinssatz()">Prüfen</button>
+    <div id="fb4a" class="fb"></div>
+
+    <div class="step-label" style="margin-top:16px">b) Verzugszinsen berechnen</div>
+    <div class="formula">Zinsen = Kapital × Zinssatz × Tage / (100 × 360)</div>
+    <div class="input-row">
+      <label>Verzugszinsen:</label>
+      <input type="number" id="zinsen" placeholder="?" step="0.01" min="0">
+      <span class="unit">EUR</span>
+    </div>
+    <button class="btn" onclick="checkZinsen()">Prüfen</button>
+    <div id="fb4b" class="fb"></div>
+
+    <div class="step-label" style="margin-top:16px">c) Pauschale – ja oder nein?</div>
+    <div style="font-size:13px;color:#555;margin-bottom:8px">Kann die Kasseler Lichtkonzepte die Verzugspauschale von 40 EUR verlangen?</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="checkPauschale(true)">Ja – 40 EUR dazu</button>
+      <button class="btn g" onclick="checkPauschale(false)">Nein – keine Pauschale</button>
+    </div>
+    <div id="fb4c" class="fb"></div>
+
+    <div class="step-label" style="margin-top:16px">d) Gesamtschaden</div>
+    <div class="input-row">
+      <label>Gesamtschaden B2C:</label>
+      <input type="number" id="gesamt" placeholder="?" step="0.01" min="0">
+      <span class="unit">EUR</span>
+    </div>
+    <button class="btn" onclick="checkGesamt()">Prüfen</button>
+    <div id="fb4d" class="fb"></div>
+  </div>
+</div>
+
+<!-- KARTE 5: VERGLEICH – erst nach allem sichtbar -->
+<div class="card locked" id="card5">
+  <div class="card-head">
+    <div class="sc g">5</div>
+    <div><h2>B2B vs. B2C – Vergleich & Reflexion</h2><p>Was ist der Unterschied – und warum?</p></div>
+  </div>
+  <div class="cb">
+    <div style="font-size:13px;color:#555;margin-bottom:10px">Du hast beide Fälle berechnet. Vergleiche die Ergebnisse:</div>
+    <div class="compare">
+      <div class="ci b2b">
+        <div class="ci-label">B2B – Herkules Event GmbH</div>
+        <div class="ci-val">52,32 EUR</div>
+        <div class="ci-sub">10,27 % Zinssatz<br>12,32 EUR Zinsen<br>+ 40 EUR Pauschale</div>
+      </div>
+      <div class="ci b2c">
+        <div class="ci-label">B2C – Herr Keller privat</div>
+        <div class="ci-val" id="b2c-val" style="color:#D3D1C7;font-style:italic;font-size:14px">noch berechnen...</div>
+        <div class="ci-sub" id="b2c-sub" style="color:#D3D1C7;font-style:italic">erst nach Bearbeitung sichtbar</div>
+      </div>
+    </div>
+    <div style="margin-top:14px;font-size:13px;font-weight:700;color:#1A1A2E">Erkläre in einem Satz: Warum ist der Gesamtschaden bei B2C deutlich niedriger?</div>
+    <textarea id="erklaerung" style="width:100%;margin-top:8px;padding:10px 12px;font-size:13px;border:1px solid #D0D0D0;border-radius:8px;background:#F5F7FA;color:#1A1A2E;resize:vertical;min-height:70px" placeholder="Weil ..."></textarea>
+    <button class="btn" style="margin-top:8px" onclick="abschluss()">Abschließen</button>
+    <div id="abschluss-box" class="abschluss">
+      <h3>Gut gemacht!</h3>
+      Bei B2C gilt ein niedrigerer Zinssatz (5 % statt 9 % über dem Basiszinssatz), und die Verzugspauschale von 40 EUR ist nach § 288 Abs. 5 BGB ausdrücklich ausgeschlossen. Der Gesetzgeber schützt Verbraucher stärker – B2B-Schuldner haften bei Verzug deutlich mehr.<br><br>
+      Den aktuellen Basiszinssatz findest du immer unter: <strong>bundesbank.de → Basiszinssatz § 247 BGB</strong>
+    </div>
+  </div>
+</div>
+
+<footer>Lernfeld 4 | Kaufleute für Büromanagement | Martin-Luther-King-Schule Kassel</footer>
+
+<script>
+const KAPITAL=4800, TAGE=9, BASIS=1.27, AUFSCHLAG=5;
+const ZS = AUFSCHLAG + BASIS;
+const ZINSEN = Math.round((KAPITAL * ZS * TAGE)/(100*360)*100)/100;
+let done = {a:false, b:false, c:false, d:false};
+
+function unlock(n, prog) {
+  const c = document.getElementById('card'+n);
+  if(c) c.classList.remove('locked');
+  if(prog) {
+    document.getElementById('p'+prog).classList.add('done');
+    const nx = document.getElementById('p'+(prog+1));
+    if(nx) nx.classList.add('active');
+  }
+}
+
+function showFb(id, type, text) {
+  const el = document.getElementById(id);
+  el.className = 'fb show ' + type;
+  el.textContent = text;
+}
+
+function lockOpts(cardId) {
+  document.querySelectorAll('#'+cardId+' .opt').forEach(b => b.style.pointerEvents='none');
+}
+
+const fbText = {
+  1: {
+    b: [true,  'Richtig! Die Deutsche Bundesbank berechnet den Basiszinssatz auf Basis des EZB-Hauptrefinanzierungssatzes und veröffentlicht ihn nach § 247 Abs. 2 BGB im Bundesanzeiger.'],
+    a: [false, 'Nicht ganz. Das Ministerium gibt das BGB heraus, legt aber nicht den Zinssatz fest.'],
+    c: [false, 'Fast – die EZB setzt den Leitzins, aber die Deutsche Bundesbank leitet daraus den Basiszinssatz nach § 247 BGB ab.'],
+    d: [false, 'Nein. Amtsgerichte wenden den Basiszinssatz an, legen ihn aber nicht fest.'],
+  },
+  2: {
+    c: [true,  'Richtig! § 247 Abs. 1 BGB: Der Basiszinssatz ändert sich zum 1. Januar und 1. Juli. Aktuell gilt 1,27 % seit 1. Juli 2025.'],
+    a: [false, 'Nein. Es gibt feste Stichtage – monatliche Änderungen wären für die Buchhaltung kaum handhabbar.'],
+    b: [false, 'Fast – aber es gibt zwei Stichtage pro Jahr, nicht nur einen.'],
+    d: [false, 'Nein. § 247 BGB gibt die Berechnungsregel vor, aber der Wert ändert sich unabhängig davon halbjährlich.'],
+  },
+  3: {
+    b: [true,  'Richtig! Die Bundesbank ist nach § 247 Abs. 2 BGB verpflichtet, den Wert im Bundesanzeiger zu veröffentlichen. bundesbank.de ist kostenlos und immer aktuell.'],
+    a: [false, 'Google kann helfen, aber nicht alle Treffer sind aktuell. Für rechtssichere Berechnungen immer die amtliche Quelle nutzen.'],
+    c: [false, '§ 247 BGB enthält die Berechnungsregel, aber nicht den aktuellen Wert – der ändert sich ja halbjährlich.'],
+    d: [false, 'Das kostet Zeit und Geld. Die Information ist kostenlos direkt bei der Bundesbank abrufbar.'],
+  }
+};
+
+function q(num, ans, correct) {
+  const cardId = 'card'+num;
+  document.querySelectorAll('#'+cardId+' .opt').forEach((b,i) => {
+    const letter = ['a','b','c','d'][i];
+    if(letter === ans) b.classList.add(ans === correct ? 'correct' : 'wrong');
+    else b.classList.add('dimmed');
+    b.style.pointerEvents = 'none';
+  });
+  const [ok, text] = fbText[num][ans];
+  showFb('fb'+num, ok ? 'ok' : 'info', text);
+  if(ok) {
+    if(num === 3) document.getElementById('quellen').style.display = 'block';
+    setTimeout(() => unlock(num+1, num), 700);
+  }
+}
+
+function checkZinssatz() {
+  const auf = parseFloat(document.getElementById('aufschlag').value);
+  const ges = parseFloat(document.getElementById('zinssatz').value);
+  if(auf === AUFSCHLAG && Math.abs(ges - ZS) < 0.02) {
+    showFb('fb4a','ok',`Richtig! § 288 Abs. 1 BGB: Bei B2C gilt 5 Prozentpunkte über dem Basiszinssatz. 5 % + 1,27 % = ${ZS.toFixed(2)} %.`);
+    document.getElementById('show-aufschlag').textContent = '5 Prozentpunkte';
+    document.getElementById('show-aufschlag').className = 'ii-val green';
+    document.getElementById('show-zinssatz').textContent = ZS.toFixed(2) + ' %';
+    document.getElementById('show-zinssatz').className = 'ii-val green';
+    done.a = true; checkStep4();
+  } else if(auf === 9) {
+    showFb('fb4a','info','9 % gilt bei B2B (§ 288 Abs. 2 BGB). Bei Verbrauchern gilt § 288 Abs. 1 BGB – welcher Aufschlag steht dort?');
+  } else if(auf === AUFSCHLAG) {
+    showFb('fb4a','warn','Der Aufschlag (5 %) stimmt – aber prüfe die Summe: 5 % + 1,27 % = ?');
+  } else {
+    showFb('fb4a','info','Schau auf die Paragrafenkarte § 288 BGB: Welcher Aufschlag gilt bei B2C?');
+  }
+}
+
+function checkZinsen() {
+  const val = parseFloat(document.getElementById('zinsen').value);
+  if(Math.abs(val - ZINSEN) < 0.05) {
+    showFb('fb4b','ok',`Richtig! ${ZINSEN.toFixed(2)} EUR. Formel: 4.800 × ${ZS.toFixed(2)} % × 9 / (100 × 360) = ${ZINSEN.toFixed(2)} EUR.`);
+    done.b = true; checkStep4();
+  } else {
+    showFb('fb4b','info',`Noch nicht ganz. Zinssatz: ${ZS.toFixed(2)} %, Tage: 9, Kapital: 4.800 EUR. Formel: K × Z × T / (100 × 360).`);
+  }
+}
+
+function checkPauschale(ja) {
+  if(!ja) {
+    showFb('fb4c','ok','Richtig! § 288 Abs. 5 BGB schließt die Pauschale gegenüber Verbrauchern ausdrücklich aus. Sie gilt nur bei B2B.');
+    done.c = true; checkStep4();
+  } else {
+    showFb('fb4c','info','Nein. § 288 Abs. 5 BGB: Die 40-EUR-Pauschale gilt nicht gegenüber Verbrauchern.');
+  }
+}
+
+function checkGesamt() {
+  const val = parseFloat(document.getElementById('gesamt').value);
+  if(Math.abs(val - ZINSEN) < 0.05) {
+    showFb('fb4d','ok',`Richtig! ${ZINSEN.toFixed(2)} EUR – nur die Zinsen, keine Pauschale. Deutlich weniger als beim B2B-Fall (52,32 EUR).`); document.getElementById('b2c-val').textContent = ZINSEN.toFixed(2) + ' EUR'; document.getElementById('b2c-val').style.color = '#3B6D11'; document.getElementById('b2c-val').style.fontStyle = 'normal'; document.getElementById('b2c-val').style.fontSize = '18px'; document.getElementById('b2c-sub').innerHTML = ZS.toFixed(2) + ' % Zinssatz<br>' + ZINSEN.toFixed(2) + ' EUR Zinsen<br>keine Pauschale'; document.getElementById('b2c-sub').style.color = '#888';
+    done.d = true; checkStep4();
+  } else if(Math.abs(val - (ZINSEN+40)) < 0.05) {
+    showFb('fb4d','info','Fast! Aber die 40-EUR-Pauschale entfällt bei B2C. Gesamtschaden = nur Zinsen.');
+  } else {
+    showFb('fb4d','info','Noch nicht ganz. Bei B2C: nur Zinsen, keine Pauschale. Wie hoch waren deine berechneten Zinsen?');
+  }
+}
+
+function checkStep4() {
+  if(done.a && done.b && done.c && done.d) {
+    setTimeout(() => unlock(5, 4), 700);
+  }
+}
+
+function abschluss() {
+  if(document.getElementById('erklaerung').value.trim().length < 10) {
+    alert('Bitte schreibe zuerst eine Erklärung in das Textfeld.');
+    return;
+  }
+  document.getElementById('abschluss-box').classList.add('show');
+  document.getElementById('p5').classList.add('done');
+}
+</script>
+</body>
+</html>
